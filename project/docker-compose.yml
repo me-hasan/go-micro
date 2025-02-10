@@ -2,7 +2,7 @@ version: '3'
 
 services: 
 
-  go-micro: 
+  broker-service: 
     build: 
       context: ./../broker-service
       dockerfile: ./../broker-service/broker-service.dockerfile 
