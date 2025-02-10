@@ -1,6 +1,7 @@
 version: '3' 
 
 services: 
+
   go-micro: 
     build: 
       context: ./../broker-service
@@ -25,6 +26,16 @@ services:
       replicas: 1    
     environment:
       DSN: "host=postgres port=5432 user=postgres password=password dbname=authdb sslmode=disable timezone=UTC connect_timeout=5"
+
+
+  logger-service:
+    build:
+      context: ./../logger-service
+      dockerfile: ./../logger-service/logger-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1    
 
 
   postgres: 
