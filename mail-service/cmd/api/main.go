@@ -35,13 +35,13 @@ func main() {
 func createMailer() Mail {
 	mailPort, _ := strconv.Atoi(os.Getenv("MAIL_PORT"))
 	m := Mail{
-		Domain:      os.Getenv("DOMAIN"),
+		Domain:      os.Getenv("MAIL_DOMAIN"),
 		Host:        os.Getenv("MAIL_HOST"),
 		Port:        mailPort,
 		Username:    os.Getenv("MAIL_USERNAME"),
 		Password:    os.Getenv("MAIL_PASSWORD"),
-		FromAddress: os.Getenv("FROM_ADDRESS"),
-		FromName:    os.Getenv("FROM_NAME"),
+		FromAddress: os.Getenv("MAIL_FROM_ADDRESS"),
+		FromName:    os.Getenv("MAIL_FROM_NAME"),
 		Encryption:  os.Getenv("MAIL_ENCRYPTION"),
 	}
 
