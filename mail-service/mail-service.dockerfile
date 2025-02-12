@@ -4,17 +4,15 @@ FROM alpine:latest
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Create directory (optional, since COPY will create it)
-RUN mkdir -p /app
-
-# Copy the Pre-built binary file from the previous stage
+# Copy the pre-built binary and templates into the container
 COPY mailerApp /app
+COPY templates /app/templates
 
 # Ensure the binary has execute permissions
 RUN chmod +x /app/mailerApp
 
-# Expose port 80 to the outside world
+# Expose the port that your application will use
 EXPOSE 80
 
-# Command to run the executable
+# Command to run the executable when the container starts
 CMD ["/app/mailerApp"]

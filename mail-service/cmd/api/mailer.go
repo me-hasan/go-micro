@@ -2,7 +2,9 @@ package main
 
 import (
 	"bytes"
-	"text/template"
+	"html/template"
+	"log"
+	"time"
 
 	"github.com/vanng822/go-premailer/premailer"
 	mail "github.com/xhit/go-simple-mail/v2"
@@ -44,7 +46,7 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 
 	msg.DataMap = data
 
-	formattedMessage, err := m.buildHtmlMassage(msg)
+	formattedMessage, err := m.buildHTMLMessage(msg)
 	if err != nil {
 		return err
 	}
@@ -60,38 +62,41 @@ func (m *Mail) SendSMTPMessage(msg Message) error {
 	server.Username = m.Username
 	server.Password = m.Password
 	server.Encryption = m.getEncryption(m.Encryption)
-	server.KeepAlive = true
-	server.ConnectTimeout = 10 * 1000
-	server.SendTimeout = 10 * 1000
+	server.KeepAlive = false
+	server.ConnectTimeout = 10 * time.Second
+	server.SendTimeout = 10 * time.Second
 
 	smtpClient, err := server.Connect()
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
 	email := mail.NewMSG()
 	email.SetFrom(msg.From).
 		AddTo(msg.To).
-		SetSubject(msg.Subject).
-		SetBody(mail.TextPlain, plainMessage).
-		AddAlternative(mail.TextHTML, formattedMessage)
+		SetSubject(msg.Subject)
+
+	email.SetBody(mail.TextPlain, plainMessage)
+	email.AddAlternative(mail.TextHTML, formattedMessage)
 
 	if len(msg.Attachments) > 0 {
-		for _, X := range msg.Attachments {
-			email.AddAttachment(X)
+		for _, x := range msg.Attachments {
+			email.AddAttachment(x)
 		}
 	}
 
 	err = email.Send(smtpClient)
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
 	return nil
 }
 
-func (m *Mail) buildHtmlMassage(msg Message) (string, error) {
-	templateToRender := "./templates/mail.html.gohtml" // path to html template
+func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
+	templateToRender := "/app/templates/mail.html.gohtml"
 
 	t, err := template.New("email-html").ParseFiles(templateToRender)
 	if err != nil {
@@ -103,7 +108,6 @@ func (m *Mail) buildHtmlMassage(msg Message) (string, error) {
 		return "", err
 	}
 
-	// render the html template
 	formattedMessage := tpl.String()
 	formattedMessage, err = m.inlineCSS(formattedMessage)
 	if err != nil {
@@ -114,7 +118,7 @@ func (m *Mail) buildHtmlMassage(msg Message) (string, error) {
 }
 
 func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
-	templateToRender := "./templates/mail.plain.gohtml" // path to plan template
+	templateToRender := "/app/templates/mail.plain.gohtml"
 
 	t, err := template.New("email-plain").ParseFiles(templateToRender)
 	if err != nil {
@@ -133,7 +137,7 @@ func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
 
 func (m *Mail) inlineCSS(s string) (string, error) {
 	options := premailer.Options{
-		RemoveClasses:     true,
+		RemoveClasses:     false,
 		CssToAttributes:   false,
 		KeepBangImportant: true,
 	}
@@ -157,7 +161,7 @@ func (m *Mail) getEncryption(s string) mail.Encryption {
 		return mail.EncryptionSTARTTLS
 	case "ssl":
 		return mail.EncryptionSSLTLS
-	case "none":
+	case "none", "":
 		return mail.EncryptionNone
 	default:
 		return mail.EncryptionSTARTTLS
