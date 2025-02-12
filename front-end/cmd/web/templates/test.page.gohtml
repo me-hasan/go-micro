@@ -43,6 +43,7 @@
     let sent = document.getElementById("payload");
     let recevied = document.getElementById("received");
 
+    // Log start here =======================================
     logBtn.addEventListener("click", function() {
         const payload = {
             action: "log",
@@ -77,6 +78,11 @@
         })        
     })
 
+    // Log end here =======================================
+
+
+
+    // Auth start here =======================================
     authBrokerBtn.addEventListener("click", function() {
 
         const payload = {
@@ -112,6 +118,11 @@
         })
     })
 
+    // Auth end here =======================================
+
+
+
+    // Broker start here =======================================
     brokerBtn.addEventListener("click", function() {
 
         const body = {
@@ -133,6 +144,9 @@
             output.innerHTML += "<br><br>Eror: " + error;
         })
     })
+
+    // Broker end here =======================================
+
         
     </script>
 {{end}}

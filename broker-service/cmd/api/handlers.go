@@ -26,7 +26,7 @@ type LogPayload struct {
 func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 	payload := jsonResponse{
 		Error:   false,
-		Message: "Hit the broker",
+		Message: "Hit the broker service",
 	}
 
 	_ = app.writeJSON(w, http.StatusOK, payload)
