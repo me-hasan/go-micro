@@ -99,7 +99,7 @@ func handlePayload(payload Payload) {
 		}
 
 	case "auth":
-		// authenticate
+	// authenticate
 
 	// you can have as many cases as you want, as long as you write the logic
 
