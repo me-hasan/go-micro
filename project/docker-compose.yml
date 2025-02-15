@@ -57,6 +57,15 @@ services:
       replicas: 1    
 
 
+  listener-service:
+    build:
+      context: ./../listener-service
+      dockerfile: ./../listener-service/listener-service.dockerfile    
+    deploy:
+      mode: replicated
+      replicas: 1
+
+
   postgres: 
     image: 'postgres:alpine' 
     ports: 
